@@ -1,0 +1,239 @@
+/* ============================================================
+   ШАПКА-КОМПАС: небо и подвижный селадоновый фарфор
+   9 ячеек: 8 триграмм по кругу + мастерская в центре.
+   Анимация одна и медленная (правило «одна большая анимация»).
+   ============================================================ */
+
+.topbar.compass-header {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+  padding: 34px 16px 30px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+/* небо: размывка селадоном, азуритом и киноварью по бумаге */
+.compass-header::before {
+  content: "";
+  position: absolute;
+  inset: -45% -12% -35%;
+  z-index: -2;
+  background:
+    radial-gradient(58% 44% at 22% 20%, rgba(95, 143, 128, 0.30), transparent 70%),
+    radial-gradient(52% 38% at 82% 14%, rgba(63, 109, 140, 0.24), transparent 72%),
+    radial-gradient(66% 46% at 50% 106%, rgba(168, 58, 44, 0.10), transparent 72%);
+  animation: skyBreathe 34s ease-in-out infinite;
+}
+
+/* подвижный фарфор 青瓷: диск глазури, плывущий по небу */
+.compass-header::after {
+  content: "";
+  position: absolute;
+  top: -22%;
+  left: 50%;
+  width: min(680px, 80vw);
+  aspect-ratio: 1;
+  z-index: -1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.60), rgba(240, 247, 242, 0.18) 44%, transparent 70%),
+    conic-gradient(from 210deg,
+      rgba(95, 143, 128, 0.30),
+      rgba(242, 239, 230, 0.06),
+      rgba(63, 109, 140, 0.22),
+      rgba(242, 239, 230, 0.06),
+      rgba(95, 143, 128, 0.30));
+  filter: blur(20px) saturate(1.15);
+  animation: porcelainDrift 26s ease-in-out infinite;
+}
+
+@keyframes skyBreathe {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50%      { transform: scale(1.06) translateY(-10px); }
+}
+@keyframes porcelainDrift {
+  0%, 100% { transform: translate3d(-50%, 0, 0) rotate(0deg) scale(1); }
+  35%      { transform: translate3d(-44%, 8px, 0) rotate(9deg) scale(1.05); }
+  70%      { transform: translate3d(-57%, -10px, 0) rotate(-7deg) scale(1.02); }
+}
+
+/* ---------- кнопка ветра: крупнее, моно, капслок ---------- */
+
+.compass-header .wind-btn {
+  position: relative;
+  font: 500 15px/1.4 var(--font-ui);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: rgba(var(--card-rgb), 0.55);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 13px 26px;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  transition: transform .25s ease, border-color .25s ease, background .25s ease;
+}
+.compass-header .wind-btn:hover {
+  transform: translateY(-1px);
+  border-color: var(--celadon);
+  background: rgba(var(--card-rgb), 0.75);
+}
+
+/* ---------- 3×3: восемь триграмм и мастерская ---------- */
+
+.sectors.trigram-square {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  width: min(430px, 92vw);
+  aspect-ratio: 1;
+  gap: 10px;
+}
+
+/* ячейки — фарфоровые плитки: глазурь, свет изнутри, мягкая тень */
+.sectors.trigram-square button {
+  margin: 0;
+  min-width: 0;
+  padding: 10px 8px;
+  border-radius: 3px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  font: 500 13px/1.35 var(--font-cn), var(--font-text);
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  animation:
+    cellIn .7s cubic-bezier(.2, .7, .2, 1) both,
+    cellFloat var(--cell-dur, 13s) ease-in-out infinite;
+  animation-delay: var(--cell-in, 0s), var(--cell-float, 0s);
+  transition: transform .28s ease, box-shadow .28s ease, border-color .28s ease;
+}
+
+.sectors.trigram-square button:nth-child(2) { --cell-in: .06s; --cell-float: -1.4s; --cell-dur: 15s; }
+.sectors.trigram-square button:nth-child(3) { --cell-in: .12s; --cell-float: -2.8s; --cell-dur: 12s; }
+.sectors.trigram-square button:nth-child(4) { --cell-in: .18s; --cell-float: -4.2s; --cell-dur: 16s; }
+.sectors.trigram-square button:nth-child(5) { --cell-in: .24s; --cell-float: -5.6s; --cell-dur: 11s; }
+.sectors.trigram-square button:nth-child(6) { --cell-in: .30s; --cell-float: -7.0s; --cell-dur: 14s; }
+.sectors.trigram-square button:nth-child(7) { --cell-in: .36s; --cell-float: -8.4s; --cell-dur: 17s; }
+.sectors.trigram-square button:nth-child(8) { --cell-in: .42s; --cell-float: -9.8s; --cell-dur: 13s; }
+.sectors.trigram-square button:nth-child(9) { --cell-in: .48s; --cell-float: -11.2s; --cell-dur: 18s; }
+
+@keyframes cellIn {
+  from { opacity: 0; transform: translateY(8px) scale(.98); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes cellFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+
+.sectors.trigram-square button:hover {
+  translate: 0 -2px;
+  color: var(--seal, #8e2f22);
+  box-shadow: none;
+  border-color: transparent;
+}
+.sectors.trigram-square button[aria-pressed="true"] {
+  background: transparent;
+  color: var(--seal, #8e2f22);
+  border-color: transparent;
+  font-weight: 700;
+  text-shadow: 0 1px 4px rgba(142, 47, 34, 0.2);
+}
+
+/* центр: мастерская «писать тушью» — киноварная печать, крупнее */
+.sectors.trigram-square .ink-center {
+  grid-area: 2 / 2;
+  font-family: 'Kelly Slab', 'JetBrains Mono', monospace;
+  font-size: 22px;
+  line-height: 1.1;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #fdf7ec;
+  background: linear-gradient(160deg, var(--seal), #8e2f22);
+  border-radius: 6px 2px 4px 5px;
+  rotate: -2deg;
+  border: 1px solid rgba(255,255,255, 0.2);
+  box-shadow: 0 4px 12px rgba(168, 58, 44, 0.4);
+}
+.sectors.trigram-square .ink-center:hover {
+  rotate: 1deg;
+  scale: 1.05;
+  box-shadow: 0 8px 24px rgba(168, 58, 44, 0.6);
+}
+
+/* позиции триграмм по периметру (визуальный порядок, не канонический багуа) */
+.trigram-square [data-key="qian"] { grid-area: 1 / 1; }
+.trigram-square [data-key="kun"]  { grid-area: 1 / 2; }
+.trigram-square [data-key="zhen"] { grid-area: 1 / 3; }
+.trigram-square [data-key="kan"]  { grid-area: 2 / 3; }
+.trigram-square [data-key="li"]   { grid-area: 3 / 3; }
+.trigram-square [data-key="gen"]  { grid-area: 3 / 2; }
+.trigram-square [data-key="xun"]  { grid-area: 3 / 1; }
+.trigram-square [data-key="dui"]  { grid-area: 2 / 1; }
+
+.sectors.trigram-square button { position: relative; z-index: 1; }
+.sectors.trigram-square button[data-key]::before {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 82px;
+  color: rgba(36, 31, 28, 0.08); /* faint ink wash */
+  z-index: -1;
+  pointer-events: none;
+  line-height: 1;
+  /* Use simple opacity instead of expensive blur for better performance */
+  opacity: 0.8;
+  transition: transform 0.5s ease, color 0.5s ease;
+}
+.sectors.trigram-square button[data-key]:hover::before {
+  color: rgba(168, 58, 44, 0.15); /* subtle cinnabar glow on hover */
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.trigram-square [data-key="qian"]::before { content: "\2630"; } /* ☰ */
+.trigram-square [data-key="kun"]::before  { content: "\2637"; } /* ☷ */
+.trigram-square [data-key="zhen"]::before { content: "\2633"; } /* ☳ */
+.trigram-square [data-key="kan"]::before  { content: "\2635"; } /* ☵ */
+.trigram-square [data-key="li"]::before   { content: "\2632"; } /* ☲ */
+.trigram-square [data-key="gen"]::before  { content: "\2636"; } /* ☶ */
+.trigram-square [data-key="xun"]::before  { content: "\2634"; } /* ☴ */
+.trigram-square [data-key="dui"]::before  { content: "\2631"; } /* ☱ */
+
+.compass-header button:focus-visible { outline: 2px solid var(--seal); outline-offset: 3px; }
+
+/* стихотворение в панели — крупно, слэб-серифом */
+.author-poem {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 24px 0;
+  font: var(--fs-poem, 22px)/1.8 var(--font-text);
+  letter-spacing: 0.004em;
+}
+.binding a { color: var(--ink); border-bottom: 1px solid var(--seal); text-decoration: none; }
+
+@media (max-width: 420px) {
+  .sectors.trigram-square { width: 92vw; gap: 8px; }
+  .sectors.trigram-square button { font-size: 11.5px; padding: 8px 6px; }
+  .sectors.trigram-square .ink-center { font-size: 15px; }
+  .author-poem { font-size: 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .compass-header::before,
+  .compass-header::after,
+  .sectors.trigram-square button { animation: none !important; }
+}

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Мир из стихов — свод 64 квадратов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+SC:wght@400;600&family=Prata&family=Kelly+Slab&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="sandbox.css">
+<link rel="stylesheet" href="compass.css">
+</head>
+<body>
+<video autoplay loop muted playsinline id="bgVideo" src="bg.mp4"></video>
+<div id="timeOverlay" class="time-overlay" aria-hidden="true"></div>
+
+<header class="topbar compass-header">
+  <button type="button" id="faqBtn" class="wind-btn" style="margin-right: -8px;">путеводитель</button>
+  <button type="button" id="windBtn" class="wind-btn">прислушаться к ветрам</button>
+  <nav class="sectors trigram-square" id="sectors" aria-label="Восемь триграмм и мастерская">
+    <button type="button" id="sandboxBtn" class="ink-center">писать тушью</button>
+  </nav>
+</header>
+
+<main id="sky" class="sky" aria-label="Свод левитирующих квадратов"></main>
+
+<p class="hint" id="hint"></p>
+
+<aside id="panel" class="panel" hidden aria-live="polite">
+  <button class="panel-close" id="panelClose" aria-label="Закрыть">×</button>
+  <div id="panelBody"></div>
+</aside>
+
+<div id="publish" class="modal" hidden>
+  <div class="modal-card">
+    <img src="zhongli_quan.jpg" alt="" class="immortal-bg" aria-hidden="true">
+    <button type="button" class="panel-close" id="publishClose" aria-label="Закрыть">×</button>
+    <h2 style="font-family: 'Kelly Slab', 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 2px;">Подношение квадрату</h2>
+
+    <label class="field">
+      <span>Свиток</span>
+      <textarea id="poemText" rows="8" placeholder="каждая строка станет потоком ци, а слово — вещью"></textarea>
+    </label>
+
+    <div id="suggestBox" class="suggest"></div>
+
+    <div class="row">
+      <label class="field">
+        <span>Гексаграмма (Удел)</span>
+        <select id="poemHex"></select>
+      </label>
+      <label class="field">
+        <span>Черта (Стадия)</span>
+        <select id="poemLine"></select>
+      </label>
+    </div>
+
+    <div class="actions">
+      <button type="button" id="splitBtn" class="btn ghost">Превратить</button>
+      <button type="button" id="publishSave" class="btn">Оставить в своде</button>
+    </div>
+
+    <div id="splitResult" class="split"></div>
+  </div>
+</div>
+
+<div id="importModal" class="modal" hidden>
+  <div class="modal-card">
+    <button type="button" class="panel-close" id="importClose" aria-label="Закрыть">×</button>
+    <h2>Импорт корпуса</h2>
+    <p class="muted">Возьми <code>result.json</code> из экспорта канала Telegram (JSON).</p>
+
+    <div class="row">
+      <label class="field">
+        <span>Файл экспорта</span>
+        <input type="file" id="importFile" accept=".json,application/json">
+      </label>
+      <label class="field">
+        <span>Параметры</span>
+        <span class="toggle"><input type="checkbox" id="importForwarded"><span>включать репосты</span></span>
+      </label>
+    </div>
+
+    <div class="actions">
+      <button type="button" id="importSeed" class="btn ghost">Загрузить сид-корпус</button>
+      <button type="button" id="importClear" class="btn ghost">Очистить свод</button>
+      <button type="button" id="importApply" class="btn">Добавить в свод</button>
+    </div>
+
+    <div id="importSummary" class="split"></div>
+  </div>
+</div>
+
+<script src="data/hexagrams.js"></script>
+<script src="data/bindings.js"></script>
+<script src="entities.js"></script>
+<script src="import-core.js"></script>
+<script src="store.js"></script>
+<script src="app.js"></script>
+<script src="mutation.js"></script>
+<script src="decay.js"></script>
+<script src="diyu.js"></script>
+<script src="publish.js"></script>
+<script src="import.js"></script>
+<div id="faqModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="faqTitle">
+  <div class="modal-card" style="max-width: 680px;">
+    <button type="button" class="panel-close" id="faqClose" aria-label="Закрыть">×</button>
+    <h2 id="faqTitle" style="font-family: 'Kelly Slab', 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 2px;">Путеводитель</h2>
+    <div style="margin-top: 20px; font-size: 15.5px; line-height: 1.75; color: var(--ink-2); display: flex; flex-direction: column; gap: 14px;">
+      <p><strong>Что это за место?</strong><br>
+      Алгоритмический Свод, построенный на структуре И Цзин (Книги Перемен). 64 гексаграммы — это 64 базовые ситуации мироздания. Внутри каждой на полках хранятся мысли, стихи и пустота.</p>
+      
+      <p><strong>Писать тушью</strong><br>
+      Центральная мастерская. Введите свои мысли и нажмите «собрать». Бот деконструирует ваш текст с помощью цепей Маркова и соберет из него новые поэтические смыслы.</p>
+      
+      <p><strong>Сон бабочки</strong><br>
+      Полный отказ от контроля. Алгоритм берет герметичный философский синтаксис Михаила Ерёмина, задает случайные параметры пустоты и генерирует текст. Идеально для созерцания.</p>
+
+      <p><strong>Пилюля Восьми Бессмертных</strong><br>
+      Под капотом текст подвергается авангардным алхимическим мутациям: «изысканный труп» сюрреалистов разрезает фразы, сдвиг УЛИПО подменяет ваши слова на соседние по алфавиту, а «Смерть автора» Ролана Барта крошит синтаксис слэшами.</p>
+
+      <p><strong>Ловля ветра (животные Чжуан-цзы)</strong><br>
+      Иногда мимо пролетают тени из притч. Если вы поймаете их (кликнув), алгоритм органично вплетет эти даосские метафоры в ваши будущие тексты с помощью союзов.</p>
+
+      <p><strong>Стихийные мутации текста</strong><br>
+      Когда вы сохраняете текст в гексаграмму («В свод»), на него действует её стихия. Огонь сжигает буквы в пепел (точки), Вода размывает пунктуацию в волны, а Ветер оставляет сквозняки (пробелы).</p>
+    </div>
+  </div>
+</div>
+
+<div id="sandboxModal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="sandboxTitle">
+  <div class="modal-card">
+    <img src="lu_dongbin.jpg" alt="" class="immortal-bg" aria-hidden="true">
+    <button type="button" class="panel-close" id="sandboxClose" aria-label="Закрыть">×</button>
+    <h2 id="sandboxTitle">писать тушью</h2>
+    <label class="field">исток<textarea id="botInput" maxlength="30000" rows="3" placeholder="вставь стих, мысль или просто слова…"></textarea></label>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 30px; margin: 20px 0; align-items: start;">
+      
+      <!-- Левая колонка: Удел и черта -->
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <label class="field">удел<select id="botHex"></select></label>
+        <label class="field">черта<select id="botShelf"><option value="0">первая</option><option value="1">вторая</option><option value="2">третья</option><option value="3">четвертая</option><option value="4">пятая</option><option value="5">верхняя</option></select></label>
+      </div>
+
+      <!-- Правая колонка: Ползунки сверху вниз -->
+      <div class="bot-controls" id="botSliders" style="display: flex; flex-direction: column; gap: 14px; margin: 0;">
+        <label>поток<output id="bot-volume-value">40%</output><input id="bot-volume" type="range" min="0" max="100" value="40"></label>
+        <label>хаос<output id="bot-fresh-value">48%</output><input id="bot-fresh" type="range" min="0" max="100" value="48"></label>
+        <label>дыхание<output id="bot-breath-value">20%</output><input id="bot-breath" type="range" min="0" max="100" value="20"></label>
+        <label>пустота<output id="bot-void-value">30%</output><input id="bot-void" type="range" min="0" max="100" value="30"></label>
+      </div>
+
+    </div>
+
+    <div class="actions" style="margin-bottom: 16px;">
+      <button type="button" id="botGenerate" class="btn">собрать</button>
+      <button type="button" id="botVariant" class="btn ghost">ещё вариант</button>
+      <button type="button" id="botChaosBtn" class="btn ghost" title="Случайные параметры и стихия">сон бабочки</button>
+      <button type="button" id="botCanvasBtn" class="btn ghost">в свиток</button>
+      <button type="button" id="botDownload" class="btn ghost">скопировать</button>
+      <button type="button" id="botSave" class="btn">в свод</button>
+    </div>
+
+    <p id="botStatus" role="status" aria-live="polite" style="margin-bottom: 6px;"></p>
+    <label class="field"><textarea id="botOutput" rows="8" placeholder="эхо…" style="font-size: 13.5px; line-height: 1.55; letter-spacing: 0.2px; font-family: var(--font-text);"></textarea></label>
+  </div>
+</div>
+<script src="sound.js"></script>
+<script src="poem-bot.js"></script>
+<script src="sandbox.js"></script>
+<script src="zhuangzi.js"></script>
+</body>
+</html>

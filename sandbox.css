@@ -1,0 +1,90 @@
+/* Standalone workshop */
+.bot-controls { 
+  display: grid; 
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+  gap: 22px; 
+  margin: 22px 0; 
+  padding: 0 4px; 
+}
+
+.bot-controls label { 
+  display: grid; 
+  grid-template-columns: 1fr auto; 
+  gap: 8px 6px; 
+  align-items: baseline;
+  font-family: var(--font-ui);
+  font-size: var(--fs-label);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.bot-controls output { 
+  font-family: var(--font-ui);
+  font-size: var(--fs-label);
+  font-variant-numeric: tabular-nums; 
+  color: var(--ink-2); 
+  letter-spacing: 0.1em; 
+}
+
+.bot-controls input[type="range"] { 
+  grid-column: 1 / -1;
+  width: 100%; 
+  accent-color: var(--seal); 
+}
+
+.bot-controls input[type="number"] { 
+  width: 100%; 
+  padding: 5px 8px; 
+  background: rgba(var(--card-rgb), .5); 
+  color: var(--ink); 
+  border: 1px solid var(--line); 
+}
+
+#botOutput { 
+  font-size: var(--fs-poem);
+  font-family: var(--font-text); 
+  white-space: pre-wrap; 
+  line-height: 1.8; 
+  letter-spacing: .004em; 
+  padding: 6px 0; 
+}
+
+#botStatus { 
+  font: var(--fs-body)/1.6 var(--font-text); 
+  color: var(--ink-2);
+}
+
+#sandboxTitle {
+  margin: 0 0 16px;
+  font-family: 'Kelly Slab', 'JetBrains Mono', monospace;
+  font-size: 42px;
+  text-transform: uppercase;
+  color: var(--ink);
+  font-weight: 400;
+  letter-spacing: 3px;
+}
+
+#sandboxModal .modal-card { 
+  width: min(1000px, 96vw); 
+  padding: 30px 30px 34px; 
+}
+
+#sandboxModal .field label { 
+  gap: 8px; 
+}
+
+#sandboxModal .actions { 
+  gap: 12px; 
+  margin: 8px 0 10px; 
+  flex-wrap: wrap; 
+}
+
+#sandboxModal .btn em { 
+  font-style: normal; 
+}
+
+#sandboxModal :focus-visible { 
+  outline: 2px solid var(--seal); 
+  outline-offset: 4px; 
+}
