@@ -145,6 +145,7 @@
       el.dataset.id = h.id;
       el.style.setProperty("--tile-color", t.palette);
       el.style.setProperty("--dur", (6 + hash(h.id) * 9).toFixed(2) + "s");
+      el.style.setProperty("--spin-dur", (4 + Math.random() * 15).toFixed(2) + "s");
       el.style.setProperty("--delay", (-hash(h.id * 2.3) * 6).toFixed(2) + "s");
       el.style.setProperty("--range", (5 + m.activity * 13).toFixed(1) + "px");
       el.style.setProperty("--glow", (0.08 + m.volume * 0.3).toFixed(2));
@@ -551,6 +552,12 @@
     var scroll = window.pageYOffset || document.documentElement.scrollTop;
     var maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
     var p = Math.min(1, Math.max(0, scroll / maxScroll));
+    // Сдвигаем все фоновые панели пропорционально прокрутке
+    var panels = document.querySelectorAll(".bg-panel");
+    panels.forEach(function(panel) {
+       // max-сдвиг = 20vh (т.к. высота 120vh)
+       panel.style.transform = "translateY(-" + (p * 20) + "vh)";
+    });
   }, { passive: true });
 
 })();

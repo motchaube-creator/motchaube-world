@@ -51,24 +51,21 @@
     var lineLen = Math.max(2, 2 + Math.round(p.breath * 10 / 100));
     var wanted = 1 + Math.round(p.volume * 15 / 100);
 
-    // Вшиваем архаичный словарь (Даль и ветхие тексты)
-    var ARCHAIC_CORPUS = `
-      Воззри на небеса, где сонм светил сияет. Днесь твердь небесная глаголет. 
-      Очи взирают в сумрак, алкая благодати. Сень чертога укрывает. 
-      Всуе вопиять в пучину, поелику тлен и прах суть удел наш. 
-      Персты указуют на стезю, а десница держит бремя. 
-      Внемли гласу, что звучит из хляби. 
-      Отнюдь не суета правит юдолью сей, но предвечный рок. 
-      Зело скорбит душа, взирая на ланиты и вежды спящих. 
-      Искони велено нести свой крест сквозь тернии. 
-      Уста сомкнуты, чело бледно, длань опустилась. 
-      Присно и во веки веков пребудет пустота. 
-      Горнило страстей сжигает плоть, оставляя лишь дух. 
-      Отрок вопрошает старца, но тот хранит безмолвие.
+    // Метод нарезок (Cut-up) и экзистенциальный киберпанк / Берроуз
+    var CUTUP_CORPUS = `
+      Хирургия вероятностей. Ржавые иглы прошивают тишину.
+      Ткань распадается на слоги. Желчь в механизме.
+      Радиоактивный туман. Сонм теней под кожей. Ожидание приговора.
+      Стерильные инструменты. Инъекция пустоты в нервный узел.
+      Металлический привкус. Флуоресцентный свет разрезает лицо.
+      Аппарат качает пепел. Сбой лингвистики. Глотка забита помехами.
+      Иней на сетчатке. Анатомия радиоволн. Звук разрываемой пленки.
+      Черная слизь на проводах. Память гниет в изоляторе.
     `;
     
-    // Подмешиваем архаику к тексту пользователя, чтобы цепи Маркова выучили эти связи
-    var blendedText = text + " " + ARCHAIC_CORPUS;
+    // Подмешиваем нарезки к тексту пользователя
+    var blendedText = text + " " + CUTUP_CORPUS;
+
 
     var sources = [{ text: blendedText, hex: false }].concat(corpus ? [{ text: corpus, hex: true }] : []);
 
@@ -158,15 +155,15 @@
 
     // --- АВАНГАРДНЫЕ МЕХАНИКИ (Пилюля 8 Бессмертных) ---
 
-    // 1. УЛИПО (Сдвиг смыслов N+1) + Архаизация
+    // 1. УЛИПО (Сдвиг смыслов N+1) + Нарезка Берроуза
     var userWordsArr = Array.from(new Set(words(text).map(function(w) { return w.toLowerCase(); }))).sort();
-    var archaicWords = words(ARCHAIC_CORPUS).map(function(w) { return w.toLowerCase(); });
+    var cutupWords = words(CUTUP_CORPUS).map(function(w) { return w.toLowerCase(); });
     
     var shiftMap = new Map();
     for (var i = 0; i < userWordsArr.length; i++) {
-       // С вероятностью 25% заменяем слово на случайное архаичное слово из словаря Даля
+       // С вероятностью 25% заменяем слово на случайное слово из нарезок (Берроуз)
        if (rand() < 0.25) {
-           shiftMap.set(userWordsArr[i], archaicWords[Math.floor(rand() * archaicWords.length)]);
+           shiftMap.set(userWordsArr[i], cutupWords[Math.floor(rand() * cutupWords.length)]);
        } else {
            shiftMap.set(userWordsArr[i], userWordsArr[(i + 1) % userWordsArr.length]);
        }
@@ -197,8 +194,8 @@
 
     function tryLine(useChain, isHex) {
       var r = rand();
-      if (r < 0.20 && corpus) return corpseLine(); // 20% Изысканный труп
-      if (r < 0.35) return dadaLine(isHex);        // 15% Шляпа Дадаиста
+      if (r < 0.25 && corpus) return corpseLine(); // 25% Изысканный труп (Берроуз)
+      if (r < 0.45) return dadaLine(isHex);        // 20% Шляпа Дадаиста
       if (useChain) { var c = chainLine(isHex); if (c) return c; }
       return fragLine(isHex);
     }
@@ -291,7 +288,8 @@
       }
 
       // Генеративный клей (Органичный Симбиоз)
-      var gluePhrases = (window.CAUGHT_PHRASES && window.CAUGHT_PHRASES.length > 0) ? window.CAUGHT_PHRASES : [];
+      var glob = typeof window !== "undefined" ? window : globalThis;
+      var gluePhrases = (glob.CAUGHT_PHRASES && glob.CAUGHT_PHRASES.length > 0) ? glob.CAUGHT_PHRASES : [];
       if (gluePhrases.length > 0 && rand() > 0.8) {
         var daoPhrase = gluePhrases[Math.floor(rand() * gluePhrases.length)];
         var conjunctions = [

@@ -52,16 +52,44 @@ body {
   padding-bottom: 64px;
 }
 
-#bgVideo {
+#bgCanvas {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
-  object-position: center top;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  display: flex;
+  justify-content: space-between;
   z-index: -1;
   pointer-events: none;
+  background-color: var(--paper);
+}
+
+.bg-panel {
+  height: 120vh; /* Запас для прокрутки */
+  flex: 1; /* Равномерно заполняют всё пространство без пробелов */
+  object-fit: cover;
+  background-size: cover;
+  background-position: center;
+  will-change: transform;
+}
+
+.bg-right {
+  background-image: url('bg_scroll.jpg');
+  background-size: 300%; /* Максимальный зум, чтобы гарантированно убить все нарисованные края свитка */
+  background-position: center center; 
+}
+
+#bgVideoCenter {
+  /* Светлая голубовато-нефритовая рама (Celadon/Qingbai) */
+  border-left: 10px solid #8caea4;
+  border-right: 10px solid #8caea4;
+  border-image: linear-gradient(180deg, #5a8272 0%, #bad1c8 20%, #8caea0 50%, #bad1c8 80%, #5a8272 100%) 1;
+  box-shadow: 
+    inset 2px 0 0 0 rgba(210, 232, 226, 0.7),
+    inset 5px 0 0 0 rgba(0, 30, 20, 0.4),
+    inset -2px 0 0 0 rgba(210, 232, 226, 0.7),
+    inset -5px 0 0 0 rgba(0, 30, 20, 0.4);
+  box-sizing: border-box;
+  z-index: 1;
 }
 
 /* ---------- верхняя панель: полоса бумаги с печатью ---------- */
@@ -172,9 +200,19 @@ body {
   box-shadow:
     0 12px 26px -20px rgba(var(--ink-rgb), 0.75),
     inset 0 0 0 1px rgba(var(--card-rgb), 0.55);
-  animation: float var(--dur, 9s) ease-in-out infinite;
-  animation-delay: var(--delay, 0s);
+  animation: float var(--dur, 9s) ease-in-out infinite, spinHex var(--spin-dur, 15s) linear infinite;
+  animation-delay: var(--delay, 0s), var(--delay, 0s);
   transition: border-color .2s, box-shadow .2s, opacity .35s, filter .35s;
+}
+
+.tile:hover {
+  animation-play-state: paused, paused !important;
+  border-color: var(--ink);
+}
+
+@keyframes spinHex {
+  0% { rotate: 0deg; }
+  100% { rotate: 360deg; }
 }
 
 /* размывка минеральным пигментом по сырой бумаге */
@@ -205,9 +243,9 @@ body {
 }
 
 @keyframes float {
-  0%   { transform: translateY(0) rotateX(0deg); }
-  50%  { transform: translateY(calc(var(--range, var(--float-range)) * -1)) rotateX(0.8deg); }
-  100% { transform: translateY(0) rotateX(0deg); }
+  0%   { translate: 0 0; }
+  50%  { translate: 0 calc(var(--range, var(--float-range)) * -1); }
+  100% { translate: 0 0; }
 }
 
 /* 卦 — черты гексаграммы рисуются тушью */

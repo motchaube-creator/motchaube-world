@@ -12,7 +12,11 @@
 <link rel="stylesheet" href="compass.css">
 </head>
 <body>
-<video autoplay loop muted playsinline id="bgVideo" src="bg.mp4"></video>
+<div id="bgCanvas">
+  <video autoplay loop muted playsinline id="bgVideoLeft" class="bg-panel bg-left" src="bg2.mp4"></video>
+  <video autoplay loop muted playsinline id="bgVideoCenter" class="bg-panel bg-center" src="bg.mp4"></video>
+  <div class="bg-panel bg-right"></div>
+</div>
 <div id="timeOverlay" class="time-overlay" aria-hidden="true"></div>
 
 <header class="topbar compass-header">
